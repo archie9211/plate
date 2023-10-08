@@ -1,5 +1,6 @@
 import {
   deleteForward,
+    getAboveNode,
     getNodeEntries,
     getPointBefore,
     isBlockAboveEmpty,
@@ -27,49 +28,31 @@ import Slate from 'slate';
     }: WithPlatePlugin<DeletePlugin, V, E>
   ) => {
     const { deleteForward } = editor;
-  editor.deleteForward = (unit: 'character' | 'word' | 'line' | 'block') => {
-    const { selection } = editor; 
+    editor.deleteForward = (unit: 'character' | 'word' | 'line' | 'block') => {
     console.log("outer" ,query);
     if(!editor.selection) return;
-    
-
-    if (!isSelectionExpanded(editor) && isBlockAboveEmpty(editor)) {
-      console.log("asdas");
-      if (query) {
-        //if query value is passed
-        const pointBefore = getPointBefore(editor, selection as Slate.Location, {
-          unit,
-        });
-  
-        if (pointBefore) {
-          const [prevCell] = getNodeEntries(editor, {
-            match: (node) => queryNode([node, pointBefore.path], query),
-            at: pointBefore,
-          });
-          if (!!prevCell && pointBefore) {
-            console.log("valid cell");
+    if (!isSelectionExpanded(editor) && isBlockAboveEmpty(editor)) 
+    { // check when line is empty
+        const isValidNode =  queryNode(getAboveNode(editor),query);
+        if(query)
+        {//is query is passed
+            if(isValidNode)
+            { // cursor is in query blocks
               removeNodes(editor as any);
-           
-          }
-           else {
-            console.log("invalid cell");
-
+            }
+            else{
+              //fallback to default behaiour
               deleteForward(unit);
             }
+        }
+        else{ // query is not passed, then plugin is active everywhere
+           removeNodes(editor as any);
+        }
       }
-      else{
-        deleteForward(unit);
+      else{ // when line is not empty, fall back to default behavior
+          deleteForward(unit);
       }
-    }
-      else{
-        console.log("outside query");
-        removeNodes(editor as any);
-      }
-    } else {
-      deleteForward(unit);
-    }
   };
- 
   return editor;
   };
 
