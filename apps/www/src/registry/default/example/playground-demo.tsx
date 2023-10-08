@@ -99,7 +99,7 @@ import { Editor } from '@/registry/default/plate-ui/editor';
 import { FixedToolbar } from '@/registry/default/plate-ui/fixed-toolbar';
 import { FloatingToolbar } from '@/registry/default/plate-ui/floating-toolbar';
 import { MentionCombobox } from '@/registry/default/plate-ui/mention-combobox';
-import { removeOnDeleteForwardPlugin } from '@/lib/plate/demo/plugins/removeOnDeleteForwardPlugin';
+import { deletePlugin } from '@/lib/plate/demo/plugins/deletePlugin';
 import { createDeletePlugin } from '@udecode/plate-select';
 
 export const usePlaygroundPlugins = ({
@@ -219,7 +219,7 @@ export const usePlaygroundPlugins = ({
             enabled: !!enabled.selectOnBackspace,
           }),
           createDeletePlugin({
-            ...removeOnDeleteForwardPlugin,
+            ...deletePlugin,
             enabled: !!enabled.selectOnBackspace,
           }),
           createSingleLinePlugin({
